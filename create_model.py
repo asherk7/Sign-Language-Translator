@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from eda.data_setup import create_dataloaders, transform_images
 from utils import set_seeds, model_summary, get_metrics
-from eda.visualizations import visualize
+from eda.visualizations import visualize, plot_label_distribution
 from pipeline.train import train
 from pipeline.test import test
 from torchvision import models
@@ -20,12 +20,12 @@ LABEL_SMOOTHING = 0.1
 ASL_DIR0 = '/root/.cache/kagglehub/datasets/kapillondhe/american-sign-language/versions/1/ASL_Dataset/Train'
 ASL_DIR1 = '/root/.cache/kagglehub/datasets/kapillondhe/american-sign-language/versions/1/ASL_Dataset/Test'
 ASL_DIR2 = '/root/.cache/kagglehub/datasets/grassknoted/asl-alphabet/versions/1/asl_alphabet_train/asl_alphabet_train'
-NUM_EPOCHS = 5
+NUM_EPOCHS = 2
 BATCH_SIZE = 64  
 
 # Fine tuning
 FT_LEARNING_RATE = 0.00005
-FT_NUM_EPOCHS = 10
+FT_NUM_EPOCHS = 3
 FT_LABEL_SMOOTHING = 0
 
 def main():
@@ -87,7 +87,7 @@ def main():
         optimizer,
         mode='min',
         factor=0.1,
-        patience=3
+        patience=2
     )
 
     # Train the model
@@ -141,14 +141,19 @@ def main():
     # Test the model
     y_pred, y_true = test(model=model, test_dataloader=test_dataloader, device=device)
 
+    # Plot label distribution
+    plot_label_distribution(train_dataloader, classes)
+
     # Visualize results and calculate metrics
-    visualize(results, y_pred, y_true, classes)
-    get_metrics(y_pred, y_true)
+    visualize(results, y_pred, y_true, classes, model=model, test_dataloader=test_dataloader, device=device)
+    get_metrics(y_true, y_pred)
 
     # Save the trained model state dictionary (weights)
-    os.makedirs('/content/Sign-Language-Translator/models', exist_ok=True)
-    torch.save(obj=model.state_dict(), f='/content/Sign-Language-Translator/models/mobilenet_v2_sign_language.pth')
-    print("Model saved to /content/Sign-Language-Translator/models/mobilenet_v2_sign_language.pth")
+    save_dir = os.path.join(os.path.dirname(__file__), 'models')
+    os.makedirs(save_dir, exist_ok=True)
+    save_path = os.path.join(save_dir, 'mobilenet_v2_sign_language.pth')
+    torch.save(obj=model.state_dict(), f=save_path)
+    print(f"Model saved to {save_path}")
 
 if __name__ == '__main__':
     main()

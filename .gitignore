@@ -1,3 +1,4 @@
 /28_class
 /asl-alphabet
 *.pdf
+__pycache__/

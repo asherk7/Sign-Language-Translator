@@ -38,6 +38,23 @@ The model uses cross-entropy loss and the Adam optimizer, with a cosine learning
 Performance is evaluated using accuracy, F1-score, and inference latency.
 The model achieves high accuracy on static test data and maintains real-time performance during live webcam inference.
 
+## Usage
+To run the sign language detection system, follow these steps:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/asherk7/Sign-Language-Translator.git
+    cd Sign-Language-Translator
+    ```
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Download the pretrained model weights and place them in the appropriate directory.
+4. Run the real-time detection script:
+   ```bash
+   python realtime.py
+   ```
+
 ## Credits
 
 Developed by **Asher Khan**, **Hamza Abou Jaib**, and **Mehdi Syed** for CS/SE 4AL3 at McMaster University.
