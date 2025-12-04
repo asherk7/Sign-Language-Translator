@@ -38,6 +38,38 @@ The model uses cross-entropy loss and the Adam optimizer, with a cosine learning
 Performance is evaluated using accuracy, F1-score, and inference latency.
 The model achieves high accuracy on static test data and maintains real-time performance during live webcam inference.
 
+## Training Details and Reproducibility
+
+A full technical description of the methodology, experiments, and analysis can be found in  
+**`paper.pdf`** (included in the root of this repository).
+
+To support full reproducibility, the complete training log, including data loading output,
+model summary, epoch-by-epoch losses, and detailed error analysis are provided in  
+**`backup.txt`**. This file contains the exact output from the training environment
+(Tesla T4 GPU, PyTorch MobileNetV2 backbone) and documents all stages of the process,
+including:
+
+- Dataset loading and total image counts  
+- Train/validation/test splits  
+- Frozen-feature training stage  
+- Fine-tuning stage with partial unfreezing  
+- Final test accuracy (99.74%)  
+- Per-class accuracy and the most confused class pairs  
+- Saved visualizations (label distribution, class accuracy, confusion matrix)
+
+### Summary of the Training Process
+
+The final model was trained on a combined dataset of **252,782** images
+spanning **28 gesture classes** (`A–Z`, `space`, `nothing`). The workflow proceeded in two stages:
+
+1. **Frozen Backbone Stage (2 epochs)**  
+   - Only the classifier head was trained  
+   - Validation accuracy rose from **95.8% → 97.4%**
+
+2. **Fine-Tuning Stage (3 epochs)**  
+   - All MobileNetV2 layers above the first five were unfrozen  
+   - Accuracy improved further to **99.74%** on the held-out test set
+
 ## Usage
 To run the sign language detection system, follow these steps:
 1. Clone the repository:
